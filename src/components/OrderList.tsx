@@ -17,9 +17,15 @@ const STATUS_COLOR: Record<string, string> = {
 
 const datePresets = ['今天', '昨天', '近7天', '近30天', '本月']
 
+const fmt = (d: Date) => {
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
+
 function getPresetDates(preset: string): { start: string; end: string } {
   const todayDate = new Date()
-  const fmt = (d: Date) => d.toLocaleDateString('sv-SE') // YYYY-MM-DD 格式
   const today = fmt(todayDate)
 
   switch (preset) {
@@ -36,7 +42,7 @@ function getPresetDates(preset: string): { start: string; end: string } {
       const d = new Date(todayDate); d.setDate(d.getDate() - 29)
       return { start: fmt(d), end: today }
     }
-    case '本月': return { start: '2026-03-01', end: today }
+    case '本月': return { start: today.slice(0, 7) + '-01', end: today }
     default: return { start: today, end: today }
   }
 }
@@ -50,8 +56,8 @@ const OrderList: React.FC<OrderListProps> = ({ onExportOrder, onExportRecords })
 
   // 筛选条件
   const [datePreset, setDatePreset] = useState('今天')
-  const [startDate, setStartDate] = useState('2026-03-23')
-  const [endDate, setEndDate] = useState('2026-03-23')
+  const [startDate, setStartDate] = useState(() => fmt(new Date()))
+  const [endDate, setEndDate] = useState(() => fmt(new Date()))
   const [orderStatus, setOrderStatus] = useState('全部状态')
   const [shop, setShop] = useState('全部门店')
   const [productName, setProductName] = useState('')

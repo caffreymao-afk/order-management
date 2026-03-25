@@ -8,7 +8,12 @@ interface ExportModalProps {
 
 const datePresets = ['今天', '昨天', '近7天', '本月', '上月', '自定义']
 
-const fmt = (d: Date) => d.toLocaleDateString('sv-SE')
+const fmt = (d: Date) => {
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
 const todayStr = fmt(new Date())
 
 function getPresetDates(preset: string) {
