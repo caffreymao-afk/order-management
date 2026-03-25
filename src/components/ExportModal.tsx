@@ -8,22 +8,30 @@ interface ExportModalProps {
 
 const datePresets = ['今天', '昨天', '近7天', '本月', '上月', '自定义']
 
+const fmt = (d: Date) => d.toLocaleDateString('sv-SE')
+const todayStr = fmt(new Date())
+
 function getPresetDates(preset: string) {
-  const today = '2026-03-23'
+  const now = new Date()
+  const today = fmt(now)
   switch (preset) {
     case '今天': return { start: today, end: today }
-    case '昨天': return { start: '2026-03-22', end: '2026-03-22' }
-    case '近7天': return { start: '2026-03-17', end: today }
-    case '本月': return { start: '2026-03-01', end: today }
-    case '上月': return { start: '2026-02-01', end: '2026-02-29' }
+    case '昨天': { const d = new Date(now); d.setDate(d.getDate() - 1); const s = fmt(d); return { start: s, end: s } }
+    case '近7天': { const d = new Date(now); d.setDate(d.getDate() - 6); return { start: fmt(d), end: today } }
+    case '本月': return { start: today.slice(0, 7) + '-01', end: today }
+    case '上月': {
+      const d = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+      const last = new Date(now.getFullYear(), now.getMonth(), 0)
+      return { start: fmt(d), end: fmt(last) }
+    }
     default: return { start: today, end: today }
   }
 }
 
 const ExportModal: React.FC<ExportModalProps> = ({ onClose, onExportSuccess }) => {
   const [datePreset, setDatePreset] = useState('今天')
-  const [startDate, setStartDate] = useState('2026-03-23')
-  const [endDate, setEndDate] = useState('2026-03-23')
+  const [startDate, setStartDate] = useState(todayStr)
+  const [endDate, setEndDate] = useState(todayStr)
   const [orderStatus, setOrderStatus] = useState('全部')
   const [shop, setShop] = useState('全部门店')
   const [productName, setProductName] = useState('')

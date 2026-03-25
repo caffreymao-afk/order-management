@@ -18,9 +18,9 @@ const STATUS_COLOR: Record<string, string> = {
 const datePresets = ['今天', '昨天', '近7天', '近30天', '本月']
 
 function getPresetDates(preset: string): { start: string; end: string } {
-  const today = '2026-03-23' // 模拟当前日期
-  const todayDate = new Date(today)
-  const fmt = (d: Date) => d.toISOString().slice(0, 10)
+  const todayDate = new Date()
+  const fmt = (d: Date) => d.toLocaleDateString('sv-SE') // YYYY-MM-DD 格式
+  const today = fmt(todayDate)
 
   switch (preset) {
     case '今天': return { start: today, end: today }
